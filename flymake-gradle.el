@@ -338,6 +338,8 @@ Return nil if project isn't a gradle project."
     (flymake-gradle-kotlin-compile->compile))
    ((bound-and-true-p android-mode)
     (flymake-gradle-java-compile->android))
+   ((eq major-mode 'java-mode)
+    (flymake-gradle-java-compile->compile))
    (:default
     (flymake-gradle-compile->build))))
 
@@ -354,6 +356,17 @@ Return nil if project isn't a gradle project."
                   (string-match-p "test" buffer-file-name))
                  "compileDebugUnitTestKotlin"
                "compileReleaseKotlin")))
+    (if (flymake-gradle--has-error-p)
+        `(,cmd)
+      `("clean" ,cmd))))
+
+(defun flymake-gradle-java-compile->compile ()
+  "Target gradle compile for java."
+  (let ((cmd (if (and
+                  buffer-file-name
+                  (string-match-p "test" buffer-file-name))
+                 "compileTestJava"
+               "compileJava")))
     (if (flymake-gradle--has-error-p)
         `(,cmd)
       `("clean" ,cmd))))
