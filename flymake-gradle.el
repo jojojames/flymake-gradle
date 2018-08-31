@@ -351,9 +351,8 @@ Return nil if project isn't a gradle project."
 
 (defun flymake-gradle-kotlin-compile->compile ()
   "Target gradle compile for kotlin."
-  (let ((cmd (if (and
-                  buffer-file-name
-                  (string-match-p "test" buffer-file-name))
+  (let ((cmd (if (and buffer-file-name
+                      (string-match-p "test" buffer-file-name))
                  "compileDebugUnitTestKotlin"
                "compileReleaseKotlin")))
     (if (flymake-gradle--has-error-p)
@@ -362,9 +361,8 @@ Return nil if project isn't a gradle project."
 
 (defun flymake-gradle-java-compile->compile ()
   "Target gradle compile for java."
-  (let ((cmd (if (and
-                  buffer-file-name
-                  (string-match-p "test" buffer-file-name))
+  (let ((cmd (if (and buffer-file-name
+                      (string-match-p "test" buffer-file-name))
                  "compileTestJava"
                "compileJava")))
     (if (flymake-gradle--has-error-p)
@@ -373,16 +371,15 @@ Return nil if project isn't a gradle project."
 
 (defun flymake-gradle-java-compile->android ()
   "Target gradle compile for android java."
-  (let ((cmd
-         (cond
-          ((and buffer-file-name
-                (string-match-p "androidTest" buffer-file-name))
-           "compileDebugAndroidTestSources")
-          ((and buffer-file-name
-                (string-match-p "test" buffer-file-name))
-           "compileDebugUnitTestSources")
-          (:default
-           "compileDebugSources"))))
+  (let ((cmd (cond
+              ((and buffer-file-name
+                    (string-match-p "androidTest" buffer-file-name))
+               "compileDebugAndroidTestSources")
+              ((and buffer-file-name
+                    (string-match-p "test" buffer-file-name))
+               "compileDebugUnitTestSources")
+              (:default
+               "compileDebugSources"))))
     (if (flymake-gradle--has-error-p)
         `(,cmd)
       `("clean" ,cmd))))
