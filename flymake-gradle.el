@@ -66,7 +66,7 @@ versions below 3 so it's safer choice to use error."
 (defcustom flymake-gradle-compile-function 'flymake-gradle-get-compile-commands
   "Function used to find build command for gradle.
 
-ex. This function may return '\(\"clean\" \"build\"\)
+ex.  This function may return '\(\"clean\" \"build\"\)
 which will then change the final command to be \"gradle clean build\"."
   :type 'function
   :group 'flymake-gradle)
@@ -95,7 +95,11 @@ The log level variables are stored in `flymake-gradle-log-level'."
             'flymake-gradle-lint-if-possible nil t))
 
 (defun flymake-gradle-lint-if-possible (report-fn &rest args)
-  "Run `flymake-gradle-lint' if possible."
+  "Run `flymake-gradle-lint' if possible.
+
+REPORT-FN is called when `flymake-gradle-lint' runs.
+
+ARGS is passed straight through to `flymake-gradle-lint'."
   (when (flymake-gradle--root-directory)
     (apply #'flymake-gradle-lint report-fn args)))
 
@@ -248,12 +252,12 @@ Diagnostics will be provided for SOURCE-BUFFER."
       result)))
 
 (defun flymake-gradle--row-from-row-column (row-column)
-  "Return row given ROW-COLUMN of the format \" (10, 46)\""
+  "Return row given ROW-COLUMN of the format \" (10, 46)\"."
   (string-to-number
    (nth 0 (split-string (string-trim row-column " (" ")") ", "))))
 
 (defun flymake-gradle--col-from-row-column (row-column)
-  "Return column given ROW-COLUMN of the format \" (10, 46)\""
+  "Return column given ROW-COLUMN of the format \" (10, 46)\"."
   (string-to-number
    (nth 1 (split-string (string-trim row-column " (" ")") ", "))))
 
