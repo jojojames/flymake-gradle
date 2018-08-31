@@ -1,0 +1,13 @@
+#+TITLE: Flymake Gradle
+
+* flymake-gradle
+  Flymake extension for Gradle.
+* Install
+  #+begin_src emacs-lisp :tangle yes
+(use-package flymake-gradle
+  :ensure t
+  :commands (flymake-gradle-add-hook)
+  :init
+  (add-hook 'java-mode-hook #'flymake-gradle-add-hook)
+  (add-hook 'kotlin-mode-hook #'flymake-gradle-add-hook))
+  #+end_src
