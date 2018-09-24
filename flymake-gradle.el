@@ -329,17 +329,28 @@ Return nil if project isn't a gradle project."
       gradlew-path
     flymake-gradle-executable))
 
+(defun flymake-gradle-android-project-p ()
+  "Detect if Android project."
+  (or
+   (bound-and-true-p android-mode)
+   (locate-dominating-file buffer-file-name "AndroidManifest.xml")
+   (ignore-errors
+     (file-exists-p (concat (car (split-string default-directory "src"))
+                            "src/main/AndroidManifest.xml")))))
+
 ;; Compile Target Functions
 
 (defun flymake-gradle-get-compile-commands ()
   "Return compile command given active modes."
   (cond
    ((eq major-mode 'kotlin-mode)
-    (flymake-gradle-kotlin-compile->compile))
-   ((bound-and-true-p android-mode)
-    (flymake-gradle-java-compile->android))
+    (if (flymake-gradle-android-project-p)
+        (flymake-gradle-kotlin-compile->compile-android)
+      (flymake-gradle-kotlin-compile->compile)))
    ((eq major-mode 'java-mode)
-    (flymake-gradle-java-compile->compile))
+    (if (flymake-gradle-android-project-p)
+        (flymake-gradle-java-compile->android)
+      (flymake-gradle-java-compile->compile)))
    (:default
     (flymake-gradle-compile->build))))
 
@@ -349,12 +360,22 @@ Return nil if project isn't a gradle project."
       '("build")
     '("clean" "build")))
 
-(defun flymake-gradle-kotlin-compile->compile ()
-  "Target gradle compile for kotlin."
+(defun flymake-gradle-kotlin-compile->compile-android ()
+  "Target gradle compile for kotlin android."
   (let ((cmd (if (and buffer-file-name
                       (string-match-p "test" buffer-file-name))
                  "compileDebugUnitTestKotlin"
                "compileReleaseKotlin")))
+    (if (flymake-gradle--has-error-p)
+        `(,cmd)
+      `("clean" ,cmd))))
+
+(defun flymake-gradle-kotlin-compile->compile ()
+  "Target gradle compile for kotlin."
+  (let ((cmd (if (and buffer-file-name
+                      (string-match-p "test" buffer-file-name))
+                 "compileTestKotlin"
+               "compileKotlin")))
     (if (flymake-gradle--has-error-p)
         `(,cmd)
       `("clean" ,cmd))))
