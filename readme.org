@@ -1,7 +1,7 @@
 #+TITLE: Flymake Gradle
 
-* flymake-gradle
-  Flymake extension for Gradle.
+[[https://melpa.org/#/flymake-gradle][file:https://melpa.org/packages/flymake-gradle-badge.svg]]
+Flymake extension for Gradle.
 * Install
   #+begin_src emacs-lisp :tangle yes
 (use-package flymake-gradle
