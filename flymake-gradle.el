@@ -315,7 +315,8 @@ Return nil if project isn't a gradle project."
   (or
    (locate-dominating-file buffer-file-name "gradlew")
    (locate-dominating-file buffer-file-name "settings.gradle")
-   (locate-dominating-file buffer-file-name "build.gradle")))
+   (locate-dominating-file buffer-file-name "build.gradle")
+   (locate-dominating-file buffer-file-name "build.gradle.kts")))
 
 (defun flymake-gradle--find-gradlew-executable ()
   "Return path containing gradlew, if it exists."
